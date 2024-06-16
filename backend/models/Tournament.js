@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const TournamentSchema = new Schema({
     tournamentname: {
         type: String,
-        required: true // Use "required" instead of "require"
+        required: true
     },
     numberofmatch: {
         type: Number,

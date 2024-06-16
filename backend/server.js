@@ -28,7 +28,7 @@ app.use("/User",UserRouter);
 
 const ClubRouter = require("./routes/Clubs.js");
 app.use("/Club",ClubRouter);
-
+--
 const TournamentRouter = require("./routes/Tournaments.js");
 app.use("/Tournament",TournamentRouter);
 
