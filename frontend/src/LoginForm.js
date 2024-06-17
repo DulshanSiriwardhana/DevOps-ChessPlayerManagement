@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import ChessDp from './Icons/ChessDp.png';
 import Header from './components/Header';
+import SignupForm from './components/SignupForm';
 
 const LoginForm = ({ onRoleChange }) => {
   const [email, setEmail] = useState('');
@@ -64,11 +65,11 @@ const LoginForm = ({ onRoleChange }) => {
                           here!
                       </h1>
                       <div className="container mt-5" style={{background:'black', width:'240px', height:'40px',borderRadius:'20px',boxShadow:'5px 5px 20px 5px'}}>
-                          <h1 style={{fontSize:'26px', color:'white'}}>Join as a coach</h1>
+                          <a href='/signup' style={{fontSize:'26px', color:'white'}}>Join as a coach</a>
                       </div>
                   </div>
               </div>
-              <div style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',paddingBottom:'100px'}}>
+              <div style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',paddingBottom:'100px', margin:'10px', marginTop:"100px"}}>
                   <div className="container mt-5" style={{ backgroundImage:'linear-gradient(#50d959, #168c1e)', minHeight: '420px', maxHeight: '420px', width: '320px', borderRadius: '20px', boxShadow: '10px 10px 20px 10px black',opacity:'90%'}}>
                   <h1 className="text-center mb-4" style={{ padding: '20px', fontWeight: 'Bold',opacity:'100%' }}>Sign in</h1>
                   <div className="row justify-content-center">
@@ -110,6 +111,7 @@ const LoginForm = ({ onRoleChange }) => {
                       </div>
                   </div>
                   </div>
+                  <SignupForm/>
               </div>
           </div>
         </div>

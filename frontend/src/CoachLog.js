@@ -8,6 +8,7 @@ import About from './components/About.js'
 import Header from './components/Header'
 import CoachDashboard from './components/CoachDashboard.js';
 import Footer from './components/Footer.js';
+import SignupForm from './components/SignupForm.js';
 
 const CoachLog = () => {
   return (
@@ -21,6 +22,7 @@ const CoachLog = () => {
             <Route path="/Club"element={<Club/>}/>
             <Route path="/Pairing"element={<Pairing/>}/>
             <Route path="/About"element={<About/>}/>
+            <Route path="/signup"element={<SignupForm/>}/>
           </Routes>
         </Sidebar>
       </BrowserRouter>

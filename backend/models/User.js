@@ -30,7 +30,7 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Club'
     }
-})
+});
 
 const User = mongoose.model("User",UserSchema);
 module.exports = User;

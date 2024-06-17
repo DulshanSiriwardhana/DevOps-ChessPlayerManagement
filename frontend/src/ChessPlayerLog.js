@@ -8,6 +8,7 @@ import About from './components/About.js'
 import Header from './components/Header'
 import PlayerDashboard from './components/PlayerDashboard';
 import Footer from './components/Footer';
+import SignupForm from './components/SignupForm.js';
 
 const ChessPlayerLog = () => {
   return (
@@ -21,6 +22,7 @@ const ChessPlayerLog = () => {
             <Route path="/Games"element={<Games/>}/>
             {/*<Route path="/Pairing"element={<Pairing/>}/>*/}
             <Route path="/About"element={<About/>}/>
+            <Route path="/signup"element={<SignupForm/>}/>
           </Routes>
         </PlayerSideBar>
       </BrowserRouter>
