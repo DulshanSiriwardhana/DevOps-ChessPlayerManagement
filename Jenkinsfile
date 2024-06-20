@@ -14,14 +14,14 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    // Clone the repository
-                    git 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
+                    // Clone the repository and checkout the 'test' branch
+                    git branch: 'test', url: 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
 
                     // Ensure .env file exists in the root directory
-                    writeFile file: '.env', text: '''
-                    MONGODB_URL=mongodb://mongodb_server:${MONGODB_DOCKER_PORT}/your_db
+                    writeFile file: '.env', text: """
+                    MONGODB_URL=mongodb://mongodb_server:${MONGODB_DOCKER_PORT}/
                     MONGODB_DOCKER_PORT=${MONGODB_DOCKER_PORT}
-                    '''
+                    """
                 }
             }
         }
