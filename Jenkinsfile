@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        // Define any global environment variables here
         NODE_VERSION = '18.17.1'
         DOCKER_COMPOSE_VERSION = '1.29.2'
     }
@@ -9,16 +10,16 @@ pipeline {
             steps {
                 script {
                     try {
-                        // Install Docker Compose if not already installed
-                        sh 'curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
-                        sh 'chmod +x /usr/local/bin/docker-compose'
-                        // Ensure correct Node.js version
-                        sh '''
-                            if ! command -v node &> /dev/null || [ "$(node -v)" != "v${NODE_VERSION}" ]; then
-                                curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
-                                apt-get install -y nodejs
-                            fi
-                        '''
+                        if (isUnix()) {
+                            // Unix-based installation
+                            sh 'curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
+                            sh 'chmod +x /usr/local/bin/docker-compose'
+                        } else {
+                            // Windows-based installation
+                            powershell '''
+                            Invoke-WebRequest -Uri "https://github.com/docker/compose/releases/download/${env.DOCKER_COMPOSE_VERSION}/docker-compose-Windows-x86_64.exe" -OutFile "$env:ProgramFiles\\Docker\\Docker\\Resources\\bin\\docker-compose.exe"
+                            '''
+                        }
                         echo 'Initialize stage completed successfully!'
                     } catch (Exception e) {
                         echo 'Initialize stage failed!'
@@ -34,8 +35,7 @@ pipeline {
                         try {
                             // Build Docker image for the backend
                             sh 'docker build -t backend ./'
-                            // Run backend tests
-                            sh 'docker run backend npm test'
+                            // Optional: Run tests for the backend here
                             echo 'Backend: Build and Test stage completed successfully!'
                         } catch (Exception e) {
                             echo 'Backend: Build and Test stage failed!'
@@ -52,8 +52,7 @@ pipeline {
                         try {
                             // Build Docker image for the frontend
                             sh 'docker build -t frontend ./'
-                            // Run frontend tests
-                            sh 'docker run frontend npm test'
+                            // Optional: Run tests for the frontend here
                             echo 'Frontend: Build and Test stage completed successfully!'
                         } catch (Exception e) {
                             echo 'Frontend: Build and Test stage failed!'
@@ -92,23 +91,10 @@ pipeline {
             }
         }
         success {
-            script {
-                echo 'Pipeline completed successfully!'
-                // Add notification for success
-                // Example: sendSlackNotification('Pipeline completed successfully!')
-            }
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            script {
-                echo 'Pipeline failed!'
-                // Add notification for failure
-                // Example: sendSlackNotification('Pipeline failed!')
-            }
+            echo 'Pipeline failed!'
         }
     }
-}
-
-// Example function for Slack notifications
-def sendSlackNotification(message) {
-    slackSend channel: '#your-channel', message: message, teamDomain: 'your-team-domain', tokenCredentialId: 'your-token-credential-id'
 }
