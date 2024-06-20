@@ -11,8 +11,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    def isUnix = isUnix()
-                    if (isUnix) {
+                    if (isUnix()) {
                         sh 'echo "Running on Unix"'
                     } else {
                         powershell '''
@@ -28,6 +27,18 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'npm install'
+                    } else {
+                        bat 'npm install'
+                    }
+                }
+            }
+        }
+
         stage('Backend: Build and Test') {
             when {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
@@ -36,15 +47,15 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                        # Unix commands for backend build and test
                         echo "Building and testing backend on Unix"
-                        # Add your build and test commands here
+                        npm run build:backend
+                        npm run test:backend
                         '''
                     } else {
                         powershell '''
-                        # Windows commands for backend build and test
                         Write-Host "Building and testing backend on Windows"
-                        # Add your build and test commands here
+                        npm run build:backend
+                        npm run test:backend
                         '''
                     }
                 }
@@ -59,15 +70,15 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                        # Unix commands for frontend build and test
                         echo "Building and testing frontend on Unix"
-                        # Add your build and test commands here
+                        npm run build:frontend
+                        npm run test:frontend
                         '''
                     } else {
                         powershell '''
-                        # Windows commands for frontend build and test
                         Write-Host "Building and testing frontend on Windows"
-                        # Add your build and test commands here
+                        npm run build:frontend
+                        npm run test:frontend
                         '''
                     }
                 }
@@ -82,15 +93,13 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                        # Unix commands for deployment
                         echo "Deploying on Unix"
-                        # Add your deployment commands here
+                        # Add your Unix deployment commands here
                         '''
                     } else {
                         powershell '''
-                        # Windows commands for deployment
                         Write-Host "Deploying on Windows"
-                        # Add your deployment commands here
+                        # Add your Windows deployment commands here
                         '''
                     }
                 }
@@ -110,6 +119,9 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed!'
+        }
+        success {
+            echo 'Pipeline succeeded!'
         }
     }
 }
