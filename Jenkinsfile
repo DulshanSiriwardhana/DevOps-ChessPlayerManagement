@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     // Clone the repository
-                    git 'https://github.com/your/repository.git'
+                    git 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
 
                     // Ensure .env file exists in the root directory
                     writeFile file: '.env', text: '''
