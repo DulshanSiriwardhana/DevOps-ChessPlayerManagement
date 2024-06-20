@@ -1,109 +1,70 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_VERSION = '18.17.1'
+        MONGODB_DOCKER_PORT = '27017' // Adjust if different
+        IMAGE_BACKEND = 'mern-backend'
+        IMAGE_FRONTEND = 'mern-frontend'
+        IMAGE_MONGODB = 'mongo:latest'
+        DOCKER_REGISTRY = '' // Specify your Docker registry if using a private registry
+    }
+
     stages {
-        stage('Declarative: Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Initialize') {
+        stage('Setup') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'echo "Running on Unix"'
-                    } else {
-                        powershell '''
-                        try {
-                            Invoke-WebRequest -Uri "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Windows-x86_64.exe" -OutFile "docker-compose.exe"
-                        } catch {
-                            Write-Error "Failed to download docker-compose: $_"
-                            exit 1
-                        }
-                        '''
-                    }
+                    // Clone the repository
+                    git 'https://github.com/your/repository.git'
+
+                    // Ensure .env file exists in the root directory
+                    writeFile file: '.env', text: '''
+                    MONGODB_URL=mongodb://mongodb_server:${MONGODB_DOCKER_PORT}/your_db
+                    MONGODB_DOCKER_PORT=${MONGODB_DOCKER_PORT}
+                    '''
                 }
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build Backend') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'npm install'
-                        sh 'npm install:backend'
-                        sh 'npm install:frontend'
-                    } else {
-                        bat 'npm install'
-                        bat 'npm install:backend'
-                        bat 'npm install:frontend'
-                    }
+                    docker.build("${DOCKER_REGISTRY}/${IMAGE_BACKEND}:${NODE_VERSION}", "-f backend/Dockerfile ./backend")
                 }
             }
         }
 
-        stage('Backend: Build and Test') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
+        stage('Build Frontend') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh '''
-                        echo "Building backend on Unix"
-                        npm run start:backend
-                        '''
-                    } else {
-                        powershell '''
-                        Write-Host "Building backend on Windows"
-                        npm run start:backend
-                        '''
-                    }
+                    docker.build("${DOCKER_REGISTRY}/${IMAGE_FRONTEND}:${NODE_VERSION}", "-f frontend/Dockerfile ./frontend")
                 }
             }
         }
 
-        stage('Frontend: Build and Test') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
+        stage('Start MongoDB') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh '''
-                        echo "Building and testing frontend on Unix"
-                        npm run build:frontend
-                        npm run test:frontend
-                        '''
-                    } else {
-                        powershell '''
-                        Write-Host "Building and testing frontend on Windows"
-                        npm run build:frontend
-                        npm run test:frontend
-                        '''
-                    }
+                    // Start MongoDB container
+                    sh "docker run -d --rm --name mongodb_server -p ${MONGODB_DOCKER_PORT}:${MONGODB_DOCKER_PORT} ${IMAGE_MONGODB}"
                 }
             }
         }
 
-        stage('Deploy') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
+        stage('Deploy Services') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh '''
-                        echo "Deploying on Unix"
-                        # Add your Unix deployment commands here
-                        '''
-                    } else {
-                        powershell '''
-                        Write-Host "Deploying on Windows"
-                        # Add your Windows deployment commands here
-                        '''
-                    }
+                    // Deploy backend and frontend services using Docker Compose
+                    sh "docker-compose up -d backend frontend"
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Run backend tests
+                    sh "docker-compose run --rm backend npm test"
                 }
             }
         }
@@ -111,19 +72,13 @@ pipeline {
 
     post {
         always {
+            // Cleanup Docker containers and volumes
             script {
-                if (isUnix()) {
-                    sh 'echo "Cleanup on Unix"'
-                } else {
-                    powershell 'echo "Cleanup on Windows"'
-                }
+                sh "docker-compose down -v --remove-orphans"
+                sh "docker stop mongodb_server"
+                sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_BACKEND}:${NODE_VERSION} || true"
+                sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_FRONTEND}:${NODE_VERSION} || true"
             }
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-        success {
-            echo 'Pipeline succeeded!'
         }
     }
 }
