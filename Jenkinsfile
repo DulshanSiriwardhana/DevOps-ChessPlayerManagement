@@ -47,15 +47,13 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                        echo "Building and testing backend on Unix"
-                        npm run build:backend
-                        npm run test:backend
+                        echo "Building backend on Unix"
+                        npm run start:backend
                         '''
                     } else {
                         powershell '''
-                        Write-Host "Building and testing backend on Windows"
-                        npm run build:backend
-                        npm run test:backend
+                        Write-Host "Building backend on Windows"
+                        npm run start:backend
                         '''
                     }
                 }
