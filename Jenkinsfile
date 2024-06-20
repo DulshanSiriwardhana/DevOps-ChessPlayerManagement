@@ -32,8 +32,12 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh 'npm install'
+                        sh 'npm install:backend'
+                        sh 'npm install:frontend'
                     } else {
                         bat 'npm install'
+                        bat 'npm install:backend'
+                        bat 'npm install:frontend'
                     }
                 }
             }
