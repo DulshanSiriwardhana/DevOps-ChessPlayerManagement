@@ -1,98 +1,59 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('97052fb7-5dfa-4057-98c1-2e30891133d2')
+        DOCKER_IMAGE_TAG = "devops-chess"
+    }
+
     stages {
-        stage('Declarative: Checkout SCM') {
+        stage('Checkout') {
             steps {
-                checkout scm
+                git 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
             }
         }
 
-        stage('Initialize') {
+        stage('Build Backend') {
             steps {
                 script {
-                    def isUnix = isUnix()
-                    if (isUnix) {
-                        sh 'echo "Running on Unix"'
-                    } else {
-                        powershell '''
-                        try {
-                            Invoke-WebRequest -Uri "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Windows-x86_64.exe" -OutFile "docker-compose.exe"
-                        } catch {
-                            Write-Error "Failed to download docker-compose: $_"
-                            exit 1
-                        }
-                        '''
+                    dir('backend') {
+                        // Build the backend Docker image
+                        docker.build("dulshansiriwardhana/backend:${DOCKER_IMAGE_TAG}")
                     }
                 }
             }
         }
 
-        stage('Backend: Build and Test') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
+        stage('Build Frontend') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh '''
-                        # Unix commands for backend build and test
-                        echo "Building and testing backend on Unix"
-                        # Add your build and test commands here
-                        '''
-                    } else {
-                        powershell '''
-                        # Windows commands for backend build and test
-                        Write-Host "Building and testing backend on Windows"
-                        # Add your build and test commands here
-                        '''
+                    dir('frontend') {
+                        // Build the frontend Docker image
+                        docker.build("dulshansiriwardhana/frontend:${DOCKER_IMAGE_TAG}")
                     }
                 }
             }
         }
 
-        stage('Frontend: Build and Test') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
+        stage('Push Images to Docker Hub') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh '''
-                        # Unix commands for frontend build and test
-                        echo "Building and testing frontend on Unix"
-                        # Add your build and test commands here
-                        '''
-                    } else {
-                        powershell '''
-                        # Windows commands for frontend build and test
-                        Write-Host "Building and testing frontend on Windows"
-                        # Add your build and test commands here
-                        '''
+                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_HUB_CREDENTIALS') {
+                        // Push the backend image
+                        docker.image("your-dockerhub-username/backend:${DOCKER_IMAGE_TAG}").push()
+                        // Push the frontend image
+                        docker.image("your-dockerhub-username/frontend:${DOCKER_IMAGE_TAG}").push()
                     }
                 }
             }
         }
 
         stage('Deploy') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
             steps {
                 script {
-                    if (isUnix()) {
-                        sh '''
-                        # Unix commands for deployment
-                        echo "Deploying on Unix"
-                        # Add your deployment commands here
-                        '''
-                    } else {
-                        powershell '''
-                        # Windows commands for deployment
-                        Write-Host "Deploying on Windows"
-                        # Add your deployment commands here
-                        '''
-                    }
+                    // Deploy the application using Docker Compose
+                    sh 'docker-compose down'
+                    sh 'docker-compose up -d'
                 }
             }
         }
@@ -100,16 +61,16 @@ pipeline {
 
     post {
         always {
-            script {
-                if (isUnix()) {
-                    sh 'echo "Cleanup on Unix"'
-                } else {
-                    powershell 'echo "Cleanup on Windows"'
-                }
-            }
+            // Clean up the workspace
+            cleanWs()
+        }
+        success {
+            // Notify about the successful deployment
+            echo 'Deployment successful!'
         }
         failure {
-            echo 'Pipeline failed!'
+            // Notify about the failed deployment
+            echo 'Deployment failed!'
         }
     }
 }
