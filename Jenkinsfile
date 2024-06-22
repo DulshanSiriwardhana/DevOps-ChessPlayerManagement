@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
+                git branch: 'test', url: 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
             }
         }
 
