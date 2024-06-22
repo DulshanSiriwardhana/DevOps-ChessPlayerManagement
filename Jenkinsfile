@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('97052fb7-5dfa-4057-98c1-2e30891133d2')
-        DOCKER_IMAGE_TAG = "devops-chess"
+        DOCKER_IMAGE_TAG = "devopschess"
     }
 
     stages {
