@@ -38,7 +38,7 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_HUB_CREDENTIALS') {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
                         // Push the backend image
                         docker.image("dulshansiriwardhana/backend:${DOCKER_IMAGE_TAG}").push()
                         // Push the frontend image
