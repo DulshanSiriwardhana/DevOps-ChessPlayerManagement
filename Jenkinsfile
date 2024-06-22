@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('97052fb7-5dfa-4057-98c1-2e30891133d2')
+        DOCKER_HUB_CREDENTIALS = credentials('97052fb7-5dfa-4057-98c1-2e30891133d2') // Your Docker Hub credentials ID
         DOCKER_IMAGE_TAG = "devopschess"
     }
 
@@ -40,9 +40,9 @@ pipeline {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_HUB_CREDENTIALS') {
                         // Push the backend image
-                        docker.image("your-dockerhub-username/backend:${DOCKER_IMAGE_TAG}").push()
+                        docker.image("dulshansiriwardhana/backend:${DOCKER_IMAGE_TAG}").push()
                         // Push the frontend image
-                        docker.image("your-dockerhub-username/frontend:${DOCKER_IMAGE_TAG}").push()
+                        docker.image("dulshansiriwardhana/frontend:${DOCKER_IMAGE_TAG}").push()
                     }
                 }
             }
