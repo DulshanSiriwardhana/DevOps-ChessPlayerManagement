@@ -1,10 +1,5 @@
-
 import React, { useState } from 'react';
 import axios from 'axios';
-import ChessDp from '../Icons/ChessDp.png';
-import Header from './Header';
-import Footer from './Footer';
-import { useNavigate } from 'react-router-dom';
 
 const SignupForm = ({ onRoleChange }) => {
   const [email, setEmail] = useState('');
@@ -14,16 +9,13 @@ const SignupForm = ({ onRoleChange }) => {
   const [age, setAge] = useState('');
   const [rating, setRating] = useState('');
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(''); // State for alert message
-
-  //const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState(''); 
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
+  
     try {
-      // Make an HTTP request to fetch all users
-      const response = await axios.post('http://localhost:8060/User/add',{
+      const response = await axios.post('http://localhost:8060/User/add', {
         email: email,
         password: password,
         role: "Coach",
@@ -32,8 +24,7 @@ const SignupForm = ({ onRoleChange }) => {
         gender: 'male',
         rating: rating
       });
-
-      // Assuming the response contains the created user object
+  
       const user = response.data;
       console.log(user);
       setEmail('');
@@ -41,29 +32,21 @@ const SignupForm = ({ onRoleChange }) => {
       setAge('');
       setRating('');
       setPassword('');
-
-      // Set the alert message and show the alert
-      setAlertMessage('Signup successful!');
-      setShowAlert(true);
-
-      // Hide the alert after a delay (optional)
-      setTimeout(() => setShowAlert(false), 3000);
-
-      //navigate('/');
+  
+      alert('Signup successful!');
+  
+  
     } catch (error) {
-      console.error('Error signing up:', error);
-
-      // Set the alert message and show the alert
-      setAlertMessage('Signup failed. Please try again.');
-      setShowAlert(true);
-
-      // Hide the alert after a delay (optional)
-      setTimeout(() => setShowAlert(false), 3000);
+      if (error.response && error.response.status === 400 && error.response.data.message === 'Email already exists') {
+        alert('Email already exists. Please use a different email.');
+      } else {
+        alert('Signup failed. Please try again.');
+      }
     }
   };
-
+  
   return (
-    <div>
+    <div style={{margin:'100px 0 0 20px'}}>
       <div style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: '100px'}}>
         <div className="container mt-5" style={{ backgroundImage: 'linear-gradient(#50d959, #168c1e)', minHeight: '540px', maxHeight: '540px', width: '400px', borderRadius: '20px', boxShadow: '10px 10px 20px 10px black', opacity: '90%' }}>
           <h1 className="text-center mb-4" style={{ padding: '20px', fontWeight: 'Bold', opacity: '100%' }}>Sign up</h1>

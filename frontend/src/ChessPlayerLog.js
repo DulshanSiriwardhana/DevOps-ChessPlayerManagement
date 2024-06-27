@@ -20,7 +20,6 @@ const ChessPlayerLog = () => {
             <Route path="/" element={<Navigate to="/PlayerDashboard" />} />
             <Route path="/PlayerDashBoard"element={<PlayerDashboard/>}/>
             <Route path="/Games"element={<Games/>}/>
-            {/*<Route path="/Pairing"element={<Pairing/>}/>*/}
             <Route path="/About"element={<About/>}/>
             <Route path="/signup"element={<SignupForm/>}/>
           </Routes>

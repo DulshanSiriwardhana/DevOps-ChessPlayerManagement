@@ -187,13 +187,11 @@ main{
 }
 
 
-/* CSS Variables */
 :root {
   --color-form-highlight:#08ad8c;
-  --half-spacing-unit: 10px; /* Example value */
+  --half-spacing-unit: 10px;
 }
 
-/* Table Styles */
 .pairing-table {
   width: 100%;
   border: 1px solid var(--color-form-highlight);
@@ -227,8 +225,6 @@ main{
 }
 
 
-
-/* Games.css */
 .flex-center {
   display: flex;
   flex-direction: column;
@@ -259,10 +255,6 @@ main{
 .new-game-button:hover {
   background-color: #0056b3;
 }
-
-
-
-/* Add this CSS in a separate .css file or inside a <style> tag within your component */
 
 table.table {
   width: 100%;
@@ -309,9 +301,6 @@ table.table td {
   }
 }
 
-/*some other css*/
-/* Pairing.css */
-
 .box {
   border: 1px solid #000000;
   padding: 20px;
@@ -322,5 +311,9 @@ table.table td {
   box-shadow: 5px 5px 10px 2px
 }
 
-/* Add your desired styles here */
+@media screen and (max-width: 1000px){
+  .text{
+    opacity: 0;
+  }
+}
 

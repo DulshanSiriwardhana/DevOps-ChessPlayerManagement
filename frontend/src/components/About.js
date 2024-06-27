@@ -1,7 +1,17 @@
 import React from 'react';
-import '../App.css'
+import '../App.css';
+import { useNavigate } from 'react-router-dom';
+import App from '../App';
 
 const About = () => {
+    const navigate = useNavigate();
+    const handleLogout=()=>{
+        navigate('/');
+        window.location.reload();
+        navigate('/');
+        <App getrole={''}></App>
+        navigate('/');
+    }
     return (
         <div className="aboutText"  style={{boxShadow:"2px 2px 20px 5px",borderRadius:'20px'}}>
             <h1>Developing team - Mantis</h1>
@@ -19,6 +29,7 @@ const About = () => {
                 enables chess players, coaches, and organizers to streamline their chess-
                 related operations and concentrate on what really counts: enhancing their
                 play and building a healthy chess community.</h2>
+            <button onClick={handleLogout}>Logout</button>
         </div>
     );
 };

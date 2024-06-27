@@ -3,11 +3,12 @@ import './App.css';
 import CoachLog from './CoachLog.js';
 import ChessPlayerLog from './ChessPlayerLog.js';
 import LoginForm from './LoginForm.js';
+import { useParams } from 'react-router-dom';
 
 const App = () => {
-  const [Role, setRole] = useState(''); // Initialize Role state
+  const {getrole} = useParams();
+  const [Role, setRole] = useState(getrole || '');
 
-  // Callback function to set the Role state
   const handleRoleChange = (newRole) => {
     setRole(newRole);
   };

@@ -3,6 +3,7 @@ import axios from 'axios';
 import ChessDp from './Icons/ChessDp.png';
 import Header from './components/Header';
 import SignupForm from './components/SignupForm';
+import './App.css';
 
 const LoginForm = ({ onRoleChange }) => {
   const [email, setEmail] = useState('');
@@ -14,13 +15,9 @@ const LoginForm = ({ onRoleChange }) => {
     e.preventDefault();
 
     try {
-      // Make an HTTP request to fetch all users
       const response = await axios.get('http://localhost:8060/User/');
-
-      // Assuming the response contains an array of user objects
       const users = response.data;
       console.log(users);
-      // Filter users based on the provided email
       const user = users.find((user) => user.email === email);
 
       if (user) {
@@ -28,7 +25,6 @@ const LoginForm = ({ onRoleChange }) => {
         setRole(userRole);
         setShowAlert(true);
 
-        // Pass the Role state to the parent component
         onRoleChange(userRole);
       } else {
         console.error('User not found or invalid role');
@@ -52,7 +48,7 @@ const LoginForm = ({ onRoleChange }) => {
   }}>
           <div style={{ display: 'flex', height: '86vh', overflow: 'hidden' }}>
               <div style={{ flex: '1', display: 'flex', alignItems: 'center'}}>
-                  <div style={{position: 'absolute', top: '60%', left: '50%' ,transform: 'translate(-100%, -50%)', zIndex: '1', textAlign: 'center', color: 'black' }}>
+                  <div className='text' style={{position: 'absolute', top: '60%', left: '60%' ,transform: 'translate(-150%, -50%)', zIndex: '1', textAlign: 'center', color: 'black' }}>
                       <h1 style={{fontSize:'20px', fontWeight:'bold',padding:'15px'}}>
                           Welcome to our Chess Player
                           Management Platform! Whether you're
@@ -65,12 +61,12 @@ const LoginForm = ({ onRoleChange }) => {
                           here!
                       </h1>
                       <div className="container mt-5" style={{background:'black', width:'240px', height:'40px',borderRadius:'20px',boxShadow:'5px 5px 20px 5px'}}>
-                          <a href='/signup' style={{fontSize:'26px', color:'white'}}>Join as a coach</a>
+                          <p style={{fontSize:'26px', color:'white'}}>Join as a coach</p>
                       </div>
                   </div>
               </div>
-              <div style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',paddingBottom:'100px', margin:'10px', marginTop:"100px"}}>
-                  <div className="container mt-5" style={{ backgroundImage:'linear-gradient(#50d959, #168c1e)', minHeight: '420px', maxHeight: '420px', width: '320px', borderRadius: '20px', boxShadow: '10px 10px 20px 10px black',opacity:'90%'}}>
+              <div className='signinup' style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',paddingBottom:'100px', margin:'10px', marginTop:"40px"}}>
+                  <div className="container mt-5" style={{ backgroundImage:'linear-gradient(#50d959, #168c1e)', minHeight: '540px', maxHeight: '540px', width: '400px', borderRadius: '20px', boxShadow: '10px 10px 20px 10px black',opacity:'90%'}}>
                   <h1 className="text-center mb-4" style={{ padding: '20px', fontWeight: 'Bold',opacity:'100%' }}>Sign in</h1>
                   <div className="row justify-content-center">
                       <div className="col-md-6" style={{ width: '300px',opacity:'100%' }}>

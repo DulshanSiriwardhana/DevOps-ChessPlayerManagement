@@ -2,58 +2,20 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('97052fb7-5dfa-4057-98c1-2e30891133d2') // Your Docker Hub credentials ID
-        DOCKER_IMAGE_TAG = "devopschess"
+        COMPOSE_FILE = 'docker-compose.yml'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'test', url: 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
+                checkout scm
             }
         }
 
-        stage('Build Backend') {
+        stage('Build and Deploy') {
             steps {
                 script {
-                    dir('backend') {
-                        // Build the backend Docker image
-                        docker.build("dulshansiriwardhana/backend:${DOCKER_IMAGE_TAG}")
-                    }
-                }
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                script {
-                    dir('frontend') {
-                        // Build the frontend Docker image
-                        docker.build("dulshansiriwardhana/frontend:${DOCKER_IMAGE_TAG}")
-                    }
-                }
-            }
-        }
-
-        stage('Push Images to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
-                        // Push the backend image
-                        docker.image("dulshansiriwardhana/backend:${DOCKER_IMAGE_TAG}").push()
-                        // Push the frontend image
-                        docker.image("dulshansiriwardhana/frontend:${DOCKER_IMAGE_TAG}").push()
-                    }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    // Deploy the application using Docker Compose
-                    sh 'docker-compose down'
-                    sh 'docker-compose up -d'
+                    sh 'docker-compose -f ${COMPOSE_FILE} up --build -d'
                 }
             }
         }
@@ -61,15 +23,14 @@ pipeline {
 
     post {
         always {
-            // Clean up the workspace
-            cleanWs()
+            script {
+                sh 'docker-compose -f ${COMPOSE_FILE} down'
+            }
         }
         success {
-            // Notify about the successful deployment
-            echo 'Deployment successful!'
+            echo 'Deployment succeeded!'
         }
         failure {
-            // Notify about the failed deployment
             echo 'Deployment failed!'
         }
     }
