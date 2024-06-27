@@ -25,7 +25,7 @@ pipeline {
         }
         stage('Login to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'DOCKER_PASS', variable: 'DOCKERHUB_PASS')]) {
+                withCredentials([string(credentialsId: '97052fb7-5dfa-4057-98c1-2e30891133d2', variable: 'DOCKERHUB_PASS')]) {
                     script {
                         bat "docker login -u dulshansiriwardhana -p %DOCKERHUB_PASS%"
                     }
