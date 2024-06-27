@@ -5,47 +5,84 @@ pipeline {
         stage('SCM Checkout') {
             steps {
                 retry(3) {
-                    git branch: 'test', url: 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
+                    script {
+                        try {
+                            git branch: 'test', url: 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
+                        } catch (err) {
+                            error("Checkout failed: ${err}")
+                        }
+                    }
                 }
             }
         }
         stage('Build Backend Docker Image') {
             steps {  
-                dir('backend') {
-                    bat 'docker build -t dulshansiriwardhana/backend:%BUILD_NUMBER% .'
+                script {
+                    dir('backend') {
+                        try {
+                            bat 'docker build -t dulshansiriwardhana/backend:%BUILD_NUMBER% .'
+                        } catch (err) {
+                            error("Backend Docker image build failed: ${err}")
+                        }
+                    }
                 }
             }
         }
         stage('Build Frontend Docker Image') {
             steps {
-                dir('frontend') {
-                    bat 'docker build -t dulshansiriwardhana/frontend:%BUILD_NUMBER% .'
+                script {
+                    dir('frontend') {
+                        try {
+                            bat 'docker build -t dulshansiriwardhana/frontend:%BUILD_NUMBER% .'
+                        } catch (err) {
+                            error("Frontend Docker image build failed: ${err}")
+                        }
+                    }
                 }
             }
         }
         stage('Login to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: '97052fb7-5dfa-4057-98c1-2e30891133d2', variable: 'DOCKERHUB_PASS')]) {
-                    script {
-                        bat "docker login -u dulshansiriwardhana -p %DOCKERHUB_PASS%"
+                script {
+                    withCredentials([string(credentialsId: '97052fb7-5dfa-4057-98c1-2e30891133d2', variable: 'DOCKERHUB_PASS')]) {
+                        try {
+                            bat "docker login -u dulshansiriwardhana -p %DOCKERHUB_PASS%"
+                        } catch (err) {
+                            error("Docker Hub login failed: ${err}")
+                        }
                     }
                 }
             }
         }
         stage('Push Backend Image') {
             steps {
-                bat 'docker push dulshansiriwardhana/backend:%BUILD_NUMBER%'
+                script {
+                    try {
+                        bat 'docker push dulshansiriwardhana/backend:%BUILD_NUMBER%'
+                    } catch (err) {
+                        error("Push Backend Image failed: ${err}")
+                    }
+                }
             }
         }
         stage('Push Frontend Image') {
             steps {
-                bat 'docker push dulshansiriwardhana/frontend:%BUILD_NUMBER%'
+                script {
+                    try {
+                        bat 'docker push dulshansiriwardhana/frontend:%BUILD_NUMBER%'
+                    } catch (err) {
+                        error("Push Frontend Image failed: ${err}")
+                    }
+                }
             }
         }
     }
     post {
         always {
             bat 'docker logout'
+        }
+        failure {
+            echo 'Build failed. Please check the logs for more details.'
         }
     }
 }
