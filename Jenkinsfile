@@ -1,37 +1,51 @@
 pipeline {
-    agent any
+    agent any 
 
-    environment {
-        COMPOSE_FILE = 'docker-compose.yml'
-    }
-
-    stages {
-        stage('Checkout') {
+    stages { 
+        stage('SCM Checkout') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Build and Deploy') {
-            steps {
-                script {
-                    sh 'docker-compose -f ${COMPOSE_FILE} up --build -d'
+                retry(3) {
+                    git branch: 'test', url: 'https://github.com/DulshanSiriwardhana/DevOps-ChessPlayerManagement.git'
                 }
             }
         }
-    }
-
-    post {
-        always {
-            script {
-                sh 'docker-compose -f ${COMPOSE_FILE} down'
+        stage('Build Backend Docker Image') {
+            steps {  
+                dir('backend') {
+                    bat 'docker build -t dulshansiriwardhana/backend:%BUILD_NUMBER% .'
+                }
             }
         }
-        success {
-            echo 'Deployment succeeded!'
+        stage('Build Frontend Docker Image') {
+            steps {
+                dir('frontend') {
+                    bat 'docker build -t dulshansiriwardhana/frontend:%BUILD_NUMBER% .'
+                }
+            }
         }
-        failure {
-            echo 'Deployment failed!'
+        stage('Login to Docker Hub') {
+            steps {
+                withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'DOCKERHUB_PASS')]) {
+                    script {
+                        bat "docker login -u dulshansiriwardhana -p %DOCKERHUB_PASS%"
+                    }
+                }
+            }
+        }
+        stage('Push Backend Image') {
+            steps {
+                bat 'docker push dulshansiriwardhana/backend:%BUILD_NUMBER%'
+            }
+        }
+        stage('Push Frontend Image') {
+            steps {
+                bat 'docker push dulshansiriwardhana/frontend:%BUILD_NUMBER%'
+            }
+        }
+    }
+    post {
+        always {
+            bat 'docker logout'
         }
     }
 }
