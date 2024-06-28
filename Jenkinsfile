@@ -84,7 +84,7 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 script {
-                    dir('path_to_your_docker_compose_directory') {
+                    dir('/') {
                         try {
                             writeFile file: '.env', text: "BUILD_NUMBER=${env.BUILD_NUMBER}\n"
                             bat "docker-compose up --build -d"
