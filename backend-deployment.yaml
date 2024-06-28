@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: backend
+        ports:
+        - containerPort: 8060
+        env:
+        - name: DB_HOST
+          value: "mongodb-server"
+        - name: DB_PORT
+          value: "27017"
+        - name: MONGODB_URL
+          value: "mongodb+srv://dulshansiriwardhana70:3abhm06lXL1EpoMi@databasecluster01.xjduvz9.mongodb.net/chessplayermanagement?retryWrites=true&w=majority"
