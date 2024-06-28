@@ -3,9 +3,7 @@ version: '3.8'
 services:
   # Backend service
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: dulshansiriwardhana/backend:${BUILD_NUMBER}
     container_name: backend
     ports:
       - "8060:8060"
@@ -19,9 +17,7 @@ services:
 
   # Frontend service
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: dulshansiriwardhana/frontend:${BUILD_NUMBER}
     container_name: frontend
     ports:
       - "3000:3000"

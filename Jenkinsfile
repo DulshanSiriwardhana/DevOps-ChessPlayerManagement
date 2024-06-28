@@ -1,7 +1,12 @@
 pipeline {
-    agent any 
+    agent any
 
-    stages { 
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('DOCKER_PASSWORD')
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
         stage('SCM Checkout') {
             steps {
                 retry(3) {
@@ -20,7 +25,7 @@ pipeline {
                 script {
                     dir('backend') {
                         try {
-                            bat 'docker build -t dulshansiriwardhana/backend:%BUILD_NUMBER% .'
+                            bat "docker build -t dulshansiriwardhana/backend:${BUILD_NUMBER} ."
                         } catch (err) {
                             error("Backend Docker image build failed: ${err}")
                         }
@@ -33,7 +38,7 @@ pipeline {
                 script {
                     dir('frontend') {
                         try {
-                            bat 'docker build -t dulshansiriwardhana/frontend:%BUILD_NUMBER% .'
+                            bat "docker build -t dulshansiriwardhana/frontend:${BUILD_NUMBER} ."
                         } catch (err) {
                             error("Frontend Docker image build failed: ${err}")
                         }
@@ -59,7 +64,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker push dulshansiriwardhana/backend:%BUILD_NUMBER%'
+                        bat "docker push dulshansiriwardhana/backend:${BUILD_NUMBER}"
                     } catch (err) {
                         error("Push Backend Image failed: ${err}")
                     }
@@ -70,14 +75,29 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker push dulshansiriwardhana/frontend:%BUILD_NUMBER%'
+                        bat "docker push dulshansiriwardhana/frontend:${BUILD_NUMBER}"
                     } catch (err) {
                         error("Push Frontend Image failed: ${err}")
                     }
                 }
             }
         }
+        stage('Deploy with Docker Compose') {
+            steps {
+                script {
+                    dir('path_to_your_docker_compose_directory') {
+                        try {
+                            bat "BUILD_NUMBER=${BUILD_NUMBER} docker-compose up --build -d"
+                            bat "docker-compose up --build -d"
+                        } catch (err) {
+                            error("Docker Compose deployment failed: ${err}")
+                        }
+                    }
+                }
+            }
+        }
     }
+
     post {
         always {
             bat 'docker logout'
