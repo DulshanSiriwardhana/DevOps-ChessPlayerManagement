@@ -81,20 +81,6 @@ pipeline {
                 }
             }
         }
-        stage('Deploy with Docker Compose') {
-            steps {
-                script {
-                    dir('') {
-                        try {
-                            writeFile file: '.env', text: "BUILD_NUMBER=${env.BUILD_NUMBER}\n"
-                            bat "docker-compose up --build -d"
-                        } catch (err) {
-                            error("Docker Compose deployment failed: ${err}")
-                        }
-                    }
-                }
-            }
-        }
     }
 
     post {
