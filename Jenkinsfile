@@ -88,7 +88,6 @@ pipeline {
                     dir('path_to_your_docker_compose_directory') {
                         try {
                             bat "BUILD_NUMBER=${BUILD_NUMBER} docker-compose up --build -d"
-                            bat "docker-compose up --build -d"
                         } catch (err) {
                             error("Docker Compose deployment failed: ${err}")
                         }
