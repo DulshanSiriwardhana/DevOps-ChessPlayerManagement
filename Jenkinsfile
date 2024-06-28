@@ -1,11 +1,6 @@
 pipeline {
     agent any
-
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('DOCKER_PASSWORD')
-        BUILD_NUMBER = "${env.BUILD_NUMBER}"
-    }
-
+    
     stages {
         stage('SCM Checkout') {
             steps {
@@ -21,7 +16,7 @@ pipeline {
             }
         }
         stage('Build Backend Docker Image') {
-            steps {  
+            steps {
                 script {
                     dir('backend') {
                         try {
@@ -87,7 +82,8 @@ pipeline {
                 script {
                     dir('path_to_your_docker_compose_directory') {
                         try {
-                            bat "BUILD_NUMBER=${BUILD_NUMBER} docker-compose up --build -d"
+                            writeFile file: '.env', text: "BUILD_NUMBER=${env.BUILD_NUMBER}\n"
+                            bat "docker-compose up --build -d"
                         } catch (err) {
                             error("Docker Compose deployment failed: ${err}")
                         }
