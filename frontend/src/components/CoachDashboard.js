@@ -58,7 +58,7 @@ const CoachDashboard = () => {
                     <h2 className="mb-3">Coach</h2>
                     <div className="list-group">
                         {coachUsers.map((user) => (
-                            <div key={user._id} className="list-group-item mb-20" style={{backgroundColor:'#93e880',color:'#000000', boxShadow:"5px 5px 10px 2px"}}>
+                            <div key={user._id} className="list-group-item" style={{marginBottom:"20px", backgroundColor:'#93e880',color:'#000000', boxShadow:"5px 5px 10px 2px"}}>
                                 <h5 className="mb-1">{user.name}</h5>
                                 <p className="mb-1"><strong>Email:</strong> {user.email}</p>
                                 <p className="mb-1"><strong>Age:</strong> {user.age}</p>
