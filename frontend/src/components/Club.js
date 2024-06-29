@@ -18,7 +18,7 @@ const Club = () => {
         head: {
             style: {
                 fontSize: '16px',
-                backgroundColor: '#f2f2f2',
+                backgroundColor: 'red',
             },
         },
     };

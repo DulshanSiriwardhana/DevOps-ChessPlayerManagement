@@ -1,11 +1,7 @@
 pipeline {
-    agent any
+    agent any 
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('DOCKER_PASSWORD')
-    }
-
-    stages {
+    stages { 
         stage('SCM Checkout') {
             steps {
                 retry(3) {
@@ -20,11 +16,11 @@ pipeline {
             }
         }
         stage('Build Backend Docker Image') {
-            steps {
+            steps {  
                 script {
                     dir('backend') {
                         try {
-                            bat "docker build -t dulshansiriwardhana/backend:${BUILD_NUMBER} ."
+                            bat 'docker build -t dulshansiriwardhana/backend:%BUILD_NUMBER% .'
                         } catch (err) {
                             error("Backend Docker image build failed: ${err}")
                         }
@@ -37,7 +33,7 @@ pipeline {
                 script {
                     dir('frontend') {
                         try {
-                            bat "docker build -t dulshansiriwardhana/frontend:${BUILD_NUMBER} ."
+                            bat 'docker build -t dulshansiriwardhana/frontend:%BUILD_NUMBER% .'
                         } catch (err) {
                             error("Frontend Docker image build failed: ${err}")
                         }
@@ -63,7 +59,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat "docker push dulshansiriwardhana/backend:${BUILD_NUMBER}"
+                        bat 'docker push dulshansiriwardhana/backend:%BUILD_NUMBER%'
                     } catch (err) {
                         error("Push Backend Image failed: ${err}")
                     }
@@ -74,7 +70,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat "docker push dulshansiriwardhana/frontend:${BUILD_NUMBER}"
+                        bat 'docker push dulshansiriwardhana/frontend:%BUILD_NUMBER%'
                     } catch (err) {
                         error("Push Frontend Image failed: ${err}")
                     }
@@ -82,7 +78,6 @@ pipeline {
             }
         }
     }
-
     post {
         always {
             bat 'docker logout'
