@@ -7,7 +7,7 @@ const Club = () => {
         rows: {
             style: {
                 fontSize: '14px',
-                minHeight: '48px', // Adjust row height
+                minHeight: '48px', 
             },
         },
         cells: {
@@ -18,7 +18,7 @@ const Club = () => {
         head: {
             style: {
                 fontSize: '16px',
-                backgroundColor: '#f2f2f2', // Change header background color
+                backgroundColor: '#f2f2f2',
             },
         },
     };
@@ -27,7 +27,7 @@ const Club = () => {
         {
             name: 'Name',
             selector: 'name',
-            sortable: true, // Allow sorting by name
+            sortable: true,
         },
         {
             name: 'Email',
@@ -44,7 +44,7 @@ const Club = () => {
         },
         {
             name: 'Gender',
-            selector: 'gender', // Add the Gender column
+            selector: 'gender',
         },
         {
             name: 'Actions',
@@ -68,7 +68,7 @@ const Club = () => {
         email: '',
         age: '',
         rating: '',
-        gender: '', // Add the gender field
+        gender: '',
     });
 
     // State for editing
@@ -172,7 +172,7 @@ const Club = () => {
                     email: '',
                     age: '',
                     rating: '',
-                    gender: '', // Reset the gender field
+                    gender: '',
                 });
             })
             .catch((error) => {
@@ -184,7 +184,6 @@ const Club = () => {
         <div className="container">
             <h1 className="my-4">Chess Player Table</h1>
 
-            {/* Add Chess Player Section */}
             <div className="card" style={{backgroundColor:"#e0d272",boxShadow:"5px 5px 10px 2px"}}>
                 <div className="card-body">
                     <h2 className="card-title mb-4">
@@ -301,7 +300,7 @@ const Club = () => {
                         customStyles={customStyles}
                         selectableRows
                         pagination
-                        responsive // Make the table responsive
+                        responsive
                     />
                     {loading ? <p>Loading...</p> : null}
                 </div>

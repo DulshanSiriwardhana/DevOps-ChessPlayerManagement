@@ -5,7 +5,6 @@ const PairingPlayer = ({ email }) => {
     const [tournamentDetails, setTournamentDetails] = useState([]);
     
     useEffect(() => {
-        // Fetch all users
         axios
             .get('http://localhost:8060/User')
             .then((response) => {

@@ -5,9 +5,8 @@ import '../App.css';
 const Header = () => {
     const headerStyle = {
         position: 'sticky',
-        top: '0', // Set the background color you prefer
-        zIndex: '2', // Ensure the header appears above other content
-        //boxShadow:"5px 5px 1px 0px"
+        top: '0',
+        zIndex: '2',
     };
 
     return (

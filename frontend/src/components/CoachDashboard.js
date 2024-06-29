@@ -51,9 +51,7 @@ const CoachDashboard = () => {
     return (
         <div>
             <div className="container mt-4" style={{ fontSize:'15px' }}>
-                {/*<h1 className="mt-4 mb-4">Coach Dashboard</h1>*/}
 
-                {/* Display Coach Users */}
                 <div className="mb-4">
                     <h2 className="mb-3">Coach</h2>
                     <div className="list-group">
@@ -69,7 +67,6 @@ const CoachDashboard = () => {
                     </div>
                 </div>
 
-                {/* Display Tournaments */}
                 <div className="mb-4">
                     <h2 className="mb-3">Tournaments</h2>
                     <table className="table table-striped" style={{boxShadow:"5px 5px 10px 2px"}}>
